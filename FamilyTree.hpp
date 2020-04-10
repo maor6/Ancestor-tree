@@ -4,29 +4,30 @@
 using namespace std;
 
 class node{
-private:
+
+public:
     string name;
     node *father;
     node *mother;
-public:
     node(string name){
         this->name=name;
         this->father=NULL;
         this->mother=NULL;
     }
-    string getName(){
-        return this->name;
-    }
+    // string getName(){
+    //     return this->name;
+    // }
 };
 
 
 namespace family{
 class Tree{
+    private:
     node *root;
     public:
-
     Tree(string name){
-        this->root = new node(name);
+        node n(name);
+        this->root = &n;
     }
     Tree& addFather(string child, string father);
     Tree& addMother(string child,string mother);
@@ -34,6 +35,9 @@ class Tree{
     string find(string relation);
     void display();
     bool remove(string name);
+    node* getroot(){
+        return this->root;
+    }
 };
 }
 

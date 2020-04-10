@@ -1,8 +1,8 @@
 #include "FamilyTree.hpp"
 #include <iostream>
 #include<string>
-using namespace family;
 
+namespace family{
 
 Tree& Tree::addFather(string child, string father){
     return *this;
@@ -12,19 +12,20 @@ Tree& Tree::addMother(string child,string mother){
     return *this;
 }
 
-string relation(string name){
+string Tree::relation(string name){
     return "";
 }
 
-string find(string relation){
+string Tree::find(string relation){
     return "";
 }
 
-void display(){
+void Tree::display(){
 
 }
 
-bool remove(string name){
+bool Tree::remove(string name){
     return true;
+}
 }
 
