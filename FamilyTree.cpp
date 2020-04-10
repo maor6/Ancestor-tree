@@ -1,22 +1,15 @@
 #include "FamilyTree.hpp"
 #include <iostream>
 #include<string>
+using namespace family;
 
 
-namespace family{
-
-        Tree(string name){
-            this->name = name;
-            this->father =  NULL;
-            this ->mother = NULL;
-        }
-
-bool addFather(string child, string father){
-    return true;
+Tree& Tree::addFather(string child, string father){
+    return *this;
 }
 
-bool addMother(string child,string mother){
-    return true;
+Tree& Tree::addMother(string child,string mother){
+    return *this;
 }
 
 string relation(string name){
@@ -35,4 +28,3 @@ bool remove(string name){
     return true;
 }
 
-}
