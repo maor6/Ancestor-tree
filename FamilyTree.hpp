@@ -22,19 +22,21 @@ public:
 
 namespace family{
 class Tree{
-    private:
     node *root;
     public:
     Tree(string name){
         node n(name);
         this->root = &n;
     }
+
     Tree& addFather(string child, string father);
     Tree& addMother(string child,string mother);
     string relation(string name);
     string find(string relation);
     void display();
+    void display2(node *root , int space);
     bool remove(string name);
+    node* findChild(node *root ,string child);
     node* getroot(){
         return this->root;
     }
