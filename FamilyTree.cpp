@@ -87,9 +87,7 @@ namespace family{
     }
 
     string Tree::relation(string name){
-        cout <<"name : " + name << endl;
         node *n = search(this->root, name);
-        cout << n->name << " " + n->type << endl;
         if(n == NULL){
             return "unrelated";
         }
@@ -143,27 +141,40 @@ namespace family{
     }
 
     Tree::node* Tree::search(node *root ,string child){
-        if(child == root->name){
+        if (root == NULL){
+            return NULL;
+        }
+        else if(child == root->name){
             return root;
         }
-        if(root->father != NULL){
-            return search(root->father, child);
+
+        node *m = search(root->mother, child);
+        node *f = search(root->father,child);
+    
+        if (f != NULL){
+            return f;
         }
-        if(root->mother != NULL){
-            return search(root->mother, child);
+        if(m != NULL){
+            return m;
         }
         return NULL;
     }  
 
     Tree::node* Tree::searchRelation(node *root ,string relation){
-        if(relation == root->type){
+        if (root == NULL){
+            return NULL;
+        }
+        else if(root->type == relation){
             return root;
         }
-        if(root->mother != NULL){
-            return searchRelation(root->mother, relation);
+        node *m = searchRelation(root->mother, relation);
+        node *f = searchRelation(root->father,relation);
+
+        if (f != NULL){
+            return f;
         }
-        if(root->father != NULL){
-            return searchRelation(root->father, relation);
+        if(m != NULL){
+            return m;
         }
         return NULL;
     }   
