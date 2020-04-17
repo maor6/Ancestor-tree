@@ -9,14 +9,11 @@ namespace family{
     class node{
         public:
         string name;
+        string type;
         node *father;
         node *mother;
-        node(string name);
+        node(string name, string type);
     };
-
-    private:
-    void display2(node *root , int space);
-    node* search(node *root ,string child);
 
     public:
     node *root;
@@ -27,11 +24,14 @@ namespace family{
     Tree& addMother(string child,string mother);
     string relation(string name);
     string find(string relation);
-    node* findChild(node *root ,string child);
     void display();
     bool remove(string name);
     
-    
+    private:
+    void printTree(node *root , int space);
+    node* search(node *root ,string child);
+    node* searchRelation(node *root ,string relation);
+
 
 
 };

@@ -1,18 +1,19 @@
 #include "FamilyTree.hpp"
 #include <iostream>
-//#include<string>
-
+#include<string>
+using namespace std;
 
 namespace family{
     
-    Tree::node::node(string name){
+    Tree::node::node(string name, string type){
         this->name=name;
+        this->type = type;
         this->father=NULL;
         this->mother=NULL;
     }
 
     Tree::Tree(string name){
-        this->root = new node(name);
+        this->root = new node(name, "me");
     }
 
     Tree::~Tree(){
@@ -34,12 +35,26 @@ namespace family{
         if(c == NULL){
             throw runtime_error("this child does not exist!");
         }
-        else if(c->father == NULL){
-            c->father = new node(father);
-        }
-        else{
+        else if(c->father != NULL){
             throw runtime_error("there is a father already!");
         }
+        else{
+            if(c->type == "me"){
+                c->father = new node(father, "father");
+            }
+            else if(c->type == "mother" || c->type == "father"){
+                c->father = new node(father, "grandfather");
+            }
+            else{
+                string s = "great-" + c->type;
+                int len = s.length();
+                if(s.at(len-6) == 'm'){
+                    s.replace(s.find("grandmother") , s.length() , "grandfather");
+                }
+                c->father = new node(father, s);
+            }
+        }
+        cout << c->name << " " + c->type << endl;
         return *this;  
     }
 
@@ -48,28 +63,52 @@ namespace family{
         if(c == NULL){
             throw runtime_error("this child does not exist!");
         }
-        else if(c->mother == NULL){
-            c->mother = new node(mother);
-        }
-        else{
+        else if(c->mother != NULL){
             throw runtime_error("there is a mother already!");
         }
-    return *this;
+        else{
+            if(c->type == "me"){
+                c->mother = new node(mother, "mother");
+            }
+            else if(c->type == "mother" || c->type == "father"){
+                c->mother = new node(mother, "grandmother");
+            }
+            else{
+                
+                string s = "great-" + c->type;
+                int len = s.length();
+                if(s.at(len-6) == 'f'){
+                    s.replace(s.find("grandfather"), s.length() , "grandmother");
+                }
+            }
+        }
+        cout << c->name << " " + c->type << endl;
+        return *this;
     }
 
     string Tree::relation(string name){
-        return "";
+        cout <<"name : " + name << endl;
+        node *n = search(this->root, name);
+        cout << n->name << " " + n->type << endl;
+        if(n == NULL){
+            return "unrelated";
+        }
+        return n->type;
     }
 
     string Tree::find(string relation){
-        return "";
+        node *n = searchRelation(this->root ,relation);
+        if (n == NULL){
+            throw runtime_error("This relation does not exist in the tree");
+        }
+        return n->name;
     }
 
     void Tree::display(){
-        display2(this->root , 0);
+        printTree(this->root , 0);
     }
 
-    void Tree::display2(node *root , int space){
+    void Tree::printTree(node *root , int space){
         // Base case  
         if (root == NULL)  
             return;  
@@ -78,7 +117,7 @@ namespace family{
         space += 10;  
   
         // Process right child first  
-        display2(root->father, space);  
+        printTree(root->father, space);  
   
         // Print current node after space  
         // count  
@@ -88,7 +127,7 @@ namespace family{
             cout<<root->name<<"\n";  
   
         // Process left child  
-        display2(root->mother, space);
+        printTree(root->mother, space);
     }
 
     bool Tree::remove(string name){
@@ -103,25 +142,7 @@ namespace family{
         return true;
     }
 
-    Tree::node* Tree::findChild(node *root ,string child){
-         cout << root->name << endl;
-        if(root == NULL){
-            return NULL;
-        }
-        else if(child == root->name){
-            return root;
-        }
-        else{
-            findChild(root->father, child);
-            findChild(root->mother, child);
-        }
-        return root;
-    }
-
     Tree::node* Tree::search(node *root ,string child){
-        if(root == NULL){
-            return NULL;
-        }
         if(child == root->name){
             return root;
         }
@@ -131,6 +152,19 @@ namespace family{
         if(root->mother != NULL){
             return search(root->mother, child);
         }
-        return root;
+        return NULL;
+    }  
+
+    Tree::node* Tree::searchRelation(node *root ,string relation){
+        if(relation == root->type){
+            return root;
+        }
+        if(root->mother != NULL){
+            return searchRelation(root->mother, relation);
+        }
+        if(root->father != NULL){
+            return searchRelation(root->father, relation);
+        }
+        return NULL;
     }   
 }
