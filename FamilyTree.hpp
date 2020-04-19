@@ -18,7 +18,6 @@ namespace family{
     public:
     node *root;
     Tree(string name);
-    ~Tree();
     void del(node *n);
     Tree& addFather(string child, string father);
     Tree& addMother(string child,string mother);

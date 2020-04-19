@@ -16,10 +16,6 @@ namespace family{
         this->root = new node(name, "me");
     }
 
-    Tree::~Tree(){
-        del(this->root);
-        cout << "the Tree is deleted" << endl; 
-    }
 
     void Tree::del(node *n){
         if(n == NULL){
@@ -54,7 +50,6 @@ namespace family{
                 c->father = new node(father, s);
             }
         }
-        cout << c->name << " " + c->type << endl;
         return *this;  
     }
 
@@ -80,13 +75,14 @@ namespace family{
                 if(s.at(len-6) == 'f'){
                     s.replace(s.find("grandfather"), s.length() , "grandmother");
                 }
+                 c->mother = new node(mother, s);
             }
         }
-        cout << c->name << " " + c->type << endl;
         return *this;
     }
 
     string Tree::relation(string name){
+        if (name == "") throw runtime_error("invalid name");
         node *n = search(this->root, name);
         if(n == NULL){
             return "unrelated";
@@ -134,7 +130,7 @@ namespace family{
         }
         node *c =  search(this->root,name);
         if(c == NULL){
-            return false;
+            throw runtime_error("this name does not exist in the tree");
         }
         del(c);
         return true;

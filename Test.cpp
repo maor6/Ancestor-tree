@@ -73,10 +73,10 @@ TEST_CASE("test find function") {
     CHECK(T.find("mother") == string("Noa"));
     CHECK((T.find("grandfather") == string("Ziv") || T.find("grandfather") == string("Ron")));
     CHECK((T.find("grandmother")== string("Yael") || T.find("grandmother")== string("Maly")));
-    CHECK((T.find("great-grandfather") == string("Gil") || T.find("great-grandfather") == string("gali")));
-    CHECK((T.find("great-grandmother") == string("Shalom") || T.find("great-grandfather") == string("Shir")));
+    CHECK((T.find("great-grandfather") == string("Gil") || T.find("great-grandfather") == string("Shalom")));
+    CHECK(T.find("great-grandmother") == string("Shir"));
     CHECK(T.find("great-great-grandfather") == string("Gil"));
-    CHECK(T.find("great-great-grandmother") == string("Shani"));
+    CHECK((T.find("great-great-grandmother") == string("Shani") || T.find("great-great-grandmother") == string("Gali")));
     CHECK(T.find("great-great-great-grandmother") == string("Shoham"));
     CHECK_THROWS(T.find("great-great-great-grandfather"));// not exist in the tree
     CHECK_THROWS(T.find("FATHER"));// invalid word
@@ -100,8 +100,8 @@ TEST_CASE("test relation function") {
     CHECK(T.relation("Maly") == string("grandmother"));
     CHECK((T.relation("Gil") == string("great-grandfather") || 
             T.relation("Gil") == string("great-great-grandfather")));
-    CHECK(T.relation("Gali") == string("great-grandfather"));
-    CHECK(T.relation("Shalom") == string("great-grandmother"));
+    CHECK(T.relation("Gali") == string("great-great-grandmother"));
+    CHECK(T.relation("Shalom") == string("great-grandfather"));
     CHECK(T.relation("Shir") == string("great-grandmother"));
     CHECK(T.relation("Shani") == string("great-great-grandmother"));
     CHECK(T.relation("Shin") == string("unrelated"));
@@ -115,30 +115,29 @@ TEST_CASE("test remove function") {
     CHECK_NOTHROW(T.remove("Yoni")); // remove father from the tree
     CHECK(T.relation("X") == string("me"));
     CHECK(T.relation("Noa") == string("mother"));
-    CHECK(T.relation("Shani") == string("great-great-grandomther"));
+    CHECK(T.relation("Shani") == string("great-great-grandmother"));
     CHECK(T.relation("Yoni") == string("unrelated"));
     CHECK(T.relation("Ziv") == string("unrelated"));
     CHECK(T.relation("Yael") == string("unrelated"));
     CHECK(T.relation("Gil") == string("unrelated"));
     CHECK(T.relation("Gali") == string("unrelated"));
     CHECK(T.find("mother") == string("Noa"));
-    CHECK(T.find("grandfather") == string("Ron"));
-    CHECK(T.find("grandmother") == string("Maly"));
     CHECK(T.find("great-grandfather") == string("Shalom"));
-    CHECK(T.find("great-grandmother") == string("Maly"));
+    CHECK(T.find("great-grandmother") == string("Shir"));
     CHECK(T.find("great-great-grandmother") == string("Shani"));
-    CHECK(T.find("great-grat-great-grandmother") == string("Shoham"));
+    CHECK(T.find("great-great-great-grandmother") == string("Shoham"));
     CHECK_THROWS(T.find("great-great-grandfather")); //not exist after the remove
     CHECK_THROWS(T.find("father"));
-    CHECK_THROWS(T.remove("X")); // invalid to delete the root
-    CHECK_NOTHROW(T.addFather("X","Eyal"));
-    CHECK_NOTHROW(T.addFather("Eyal", "Goten"));
-    CHECK(T.relation("Goten") == string("grandfather"));
-    CHECK_NOTHROW(T.addMother("Eyal", "Burma"));
-    CHECK_THROWS(T.remove("Goku")); //not exist in the tree
-    CHECK_NOTHROW(T.remove("Goten"));
-    CHECK(T.relation("Goten") == string("unrelated"));
-    CHECK(T.relation("Eyal") == string("father"));
+    Tree T2("Y");
+    CHECK_THROWS(T2.remove("Y")); // invalid to delete the root
+    CHECK_NOTHROW(T2.addFather("Y","Eyal"));
+    CHECK_NOTHROW(T2.addFather("Eyal", "Goten"));
+    CHECK(T2.relation("Goten") == string("grandfather"));
+    CHECK_NOTHROW(T2.addMother("Eyal", "Burma"));
+    CHECK_THROWS(T2.remove("Goku")); //not exist in the tree
+    CHECK_NOTHROW(T2.remove("Goten"));
+    CHECK(T2.relation("Goten") == string("unrelated"));
+    CHECK(T2.relation("Eyal") == string("father"));
 }//26
 
 
