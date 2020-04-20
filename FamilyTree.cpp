@@ -7,9 +7,10 @@ namespace family{
     
     Tree::node::node(string name, string type){
         this->name=name;
-        this->type = type;
-        this->father=NULL;
-        this->mother=NULL;
+        this->type=type;
+        this->father=nullptr;
+        this->mother=nullptr;
+        this->child=nullptr;
     }
 
     Tree::Tree(string name){
@@ -17,21 +18,12 @@ namespace family{
     }
 
 
-    void Tree::del(node *n){
-        if(n == NULL){
-            return;
-        } 
-        del(n->father);
-        del(n->mother);
-        delete n;
-    }
-
     Tree& Tree::addFather(string child, string father){
         node *c = Tree::search(this->root , child);
-        if(c == NULL){
+        if(c == nullptr){
             throw runtime_error("this child does not exist!");
         }
-        else if(c->father != NULL){
+        else if(c->father != nullptr){
             throw runtime_error("there is a father already!");
         }
         else{
@@ -49,16 +41,17 @@ namespace family{
                 }
                 c->father = new node(father, s);
             }
+            c->father->child = c;
         }
         return *this;  
     }
 
     Tree& Tree::addMother(string child,string mother){
         node *c = search(this->root , child);
-        if(c == NULL){
+        if(c == nullptr){
             throw runtime_error("this child does not exist!");
         }
-        else if(c->mother != NULL){
+        else if(c->mother != nullptr){
             throw runtime_error("there is a mother already!");
         }
         else{
@@ -77,6 +70,7 @@ namespace family{
                 }
                  c->mother = new node(mother, s);
             }
+            c->mother->child = c;
         }
         return *this;
     }
@@ -84,7 +78,7 @@ namespace family{
     string Tree::relation(string name){
         if (name == "") throw runtime_error("invalid name");
         node *n = search(this->root, name);
-        if(n == NULL){
+        if(n == nullptr){
             return "unrelated";
         }
         return n->type;
@@ -92,7 +86,7 @@ namespace family{
 
     string Tree::find(string relation){
         node *n = searchRelation(this->root ,relation);
-        if (n == NULL){
+        if (( n == nullptr || n->name == "")){
             throw runtime_error("This relation does not exist in the tree");
         }
         return n->name;
@@ -104,7 +98,7 @@ namespace family{
 
     void Tree::printTree(node *root , int space){
         // Base case  
-        if (root == NULL)  
+        if (root == nullptr)  
             return;  
   
         // Increase distance between levels  
@@ -129,16 +123,31 @@ namespace family{
             throw runtime_error("cant delete the root");
         }
         node *c =  search(this->root,name);
-        if(c == NULL){
+        if(c == nullptr ){
             throw runtime_error("this name does not exist in the tree");
         }
-        del(c);
+        if(c->child->father != nullptr && c->child->father->name == name){
+           c->child->father = nullptr;
+        }
+        else c->child->mother = nullptr;
+        c = del(c);
         return true;
     }
 
+    Tree::node* Tree::del(node *n){
+        if(n == nullptr){
+            return nullptr;
+        } 
+        del(n->father);
+        del(n->mother);
+
+        delete n;
+        return nullptr;
+    }
+
     Tree::node* Tree::search(node *root ,string child){
-        if (root == NULL){
-            return NULL;
+        if (root == nullptr){
+            return nullptr;
         }
         else if(child == root->name){
             return root;
@@ -147,18 +156,18 @@ namespace family{
         node *m = search(root->mother, child);
         node *f = search(root->father,child);
     
-        if (f != NULL){
+        if (f != nullptr){
             return f;
         }
-        if(m != NULL){
+        if(m != nullptr){
             return m;
         }
-        return NULL;
+        return nullptr;
     }  
 
     Tree::node* Tree::searchRelation(node *root ,string relation){
-        if (root == NULL){
-            return NULL;
+        if (root == nullptr){
+            return nullptr;
         }
         else if(root->type == relation){
             return root;
@@ -166,12 +175,12 @@ namespace family{
         node *m = searchRelation(root->mother, relation);
         node *f = searchRelation(root->father,relation);
 
-        if (f != NULL){
+        if (f != nullptr){
             return f;
         }
-        if(m != NULL){
+        if(m != nullptr){
             return m;
         }
-        return NULL;
+        return nullptr;
     }   
 }
